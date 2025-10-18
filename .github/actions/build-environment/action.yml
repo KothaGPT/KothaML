@@ -22,6 +22,3 @@ inputs:
 runs:
   using: 'docker'
   image: 'ghcr.io/khulnasoft/ml-buildkit:latest'
-  env:
-    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  shell: bash
