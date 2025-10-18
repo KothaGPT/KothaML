@@ -1,0 +1,21 @@
+{
+  "enabled": true,
+  "repositories": [
+    {
+      "name": "khulnasoft/ml-workspace",
+      "enabled": true
+    }
+  ],
+  "issueReport": {
+    "title": "Issue Report",
+    "body": "Please describe the issue in detail.",
+    "labels": ["bug"],
+    "assignees": []
+  },
+  "featureRequest": {
+    "title": "Feature Request",
+    "body": "Describe the feature you'd like to see.",
+    "labels": ["enhancement"],
+    "assignees": []
+  }
+}

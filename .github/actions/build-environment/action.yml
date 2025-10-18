@@ -1,0 +1,27 @@
+name: Build Environment
+description: Build, test, check, and release steps execution environment
+author: KhulnaSoft <info@khulnasoft.com>
+inputs:
+  build_args:
+    description: 'Build arguments passed to the build.py scripts'
+    required: false
+  working_directory:
+    description: 'Working directory from where the build command is run'
+    required: false
+    default: $GITHUB_WORKSPACE
+  container_registry_url:
+    description: 'Container registry URL for login'
+    required: false
+  container_registry_username:
+    description: 'Container registry username for login'
+    required: false
+  container_registry_password:
+    description: 'Container registry password for login'
+    required: false
+
+runs:
+  using: 'docker'
+  image: 'ghcr.io/khulnasoft/ml-buildkit:latest'
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  shell: bash

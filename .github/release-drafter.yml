@@ -1,0 +1,47 @@
+name-template: "$RESOLVED_VERSION"
+tag-template: "v$RESOLVED_VERSION"
+categories:
+  - title: "💥 Breaking Changes"
+    labels:
+      - "breaking"
+  - title: "🎁 Features & Improvements"
+    labels:
+      - "feature"
+      - "enhancement"
+  - title: "🚨 Bug Fixes"
+    labels:
+      - "bug"
+  - title: "📝 Documentation"
+    labels:
+      - "documentation"
+  - title: "👷 Maintenance & Refactoring"
+    labels:
+      - "maintenance"
+      - "refactoring"
+  - title: "🔒 Security"
+    labels:
+      - "security"
+  - title: "⬆ Dependencies"
+    labels:
+      - "dependencies"
+  #- title: "🔥 Removed"
+  #- title: "⚡️ Performance"
+  #- title: "✅ Tests"
+  #- title: "💡 New Features"
+  #- title: "🧰 Maintenance"
+  #- title: "⚠️ Deprecations"
+  #- title: "✨ New Features"
+exclude-labels:
+  - "skip changelog"
+change-template: "- $TITLE (#$NUMBER) by @$AUTHOR"
+replacers:
+  - search: '/(?:and)?(,)?(\s)*@github-actions(?:\[bot\])?,?/g'
+    replace: ""
+template: |
+  [![DockerHub Release](https://img.shields.io/docker/v/khulnasoft/ml-workspace/$RESOLVED_VERSION?label=docker%20version&color=blue)](https://hub.docker.com/repository/docker/khulnasoft/ml-workspace) [![DockerHub Image Size](https://img.shields.io/docker/image-size/khulnasoft/ml-workspace/$RESOLVED_VERSION?label=docker%20image%20size&color=blue)](https://hub.docker.com/repository/docker/khulnasoft/ml-workspace)
+
+  $CHANGES
+
+  ## 👥 Contributors
+
+  Thanks to $CONTRIBUTORS for the contributions.

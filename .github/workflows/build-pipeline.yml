@@ -1,0 +1,36 @@
+name: Build Pipeline
+
+on:
+  workflow_dispatch:
+    inputs:
+      args:
+        description: Build arguments passed to the build script
+        required: false
+        default: "--make --force"
+      working_directory:
+        description: Working directory from where the build command is run
+        required: false
+        default: "."
+  push:
+    branches:
+      - main
+
+env:
+  ARGS: ${{ github.event.inputs.args || secrets.BUILD_ARGS }}
+  WORKING_DIR: ${{ github.event.inputs.working_directory || secrets.WORKING_DIRECTORY }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get host IP
+        run: echo "_HOST_IP=$(hostname -I | cut -d ' ' -f 1)" >> $GITHUB_ENV
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Run build scripts
+        uses: ./.github/actions/build-environment
+        with:
+          build_args: ${{ env.ARGS }}
+          working_directory: ${{ env.WORKING_DIR }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

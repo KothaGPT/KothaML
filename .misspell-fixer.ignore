@@ -1,0 +1,6 @@
+# Ignore list for misspell-fixer
+# Add words to ignore in spell checking, one per line
+# Example:
+# KhulnaSoft
+# github
+# nodejs

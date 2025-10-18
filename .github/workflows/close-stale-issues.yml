@@ -1,0 +1,24 @@
+name: Close Stale Issues
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "30 1 * * *"
+
+jobs:
+  close-stale-issues:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@v3
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          days-before-stale: 90
+          days-before-close: 14
+          stale-issue-message: |
+            This issue is stale because it has been open for 90 days without any activity.
+            Please remove the stale label or add a comment to prevent closure.
+          stale-pr-message: |
+            This pull request is stale because it has been open for 90 days without any activity.
+            Please remove the stale label or add a comment to prevent closure.
+          stale-issue-label: stale
+          stale-pr-label: stale

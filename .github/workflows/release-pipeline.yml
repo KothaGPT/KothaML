@@ -1,0 +1,101 @@
+# Based on https://github.com/khulnasoft/ml-buildkit/blob/v0.6.6/workflows/build-pipeline.yml
+name: release-pipeline
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version of this release"
+        required: true
+  milestone:
+    types: [closed]
+
+env:
+  BRANCH_PREFIX: "release/v"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: set-version-from-milestone
+        if: github.event.milestone != null && github.event.milestone.title != null
+        run: |
+          echo "VERSION=$(sed "s/^v//" <<< "${{ github.event.milestone.title }}")" >> $GITHUB_ENV
+          echo "PR_MILESTONE_LINK=-M ${{ github.event.milestone.title }}" >> $GITHUB_ENV
+      - name: set-version-from-input
+        if: github.event.inputs != null && github.event.inputs.version != null
+        run: echo "VERSION=${{ github.event.inputs.version }}" >> $GITHUB_ENV
+      - name: check-version
+        run: |
+          if [[ ! "${{ env.VERSION }}" =~ ^([0-9]+\.[0-9]+\.[0-9]+.*)$ ]]; then
+            echo "The version is not valid: ${{ env.VERSION }}"
+            exit 1
+          fi
+      - name: set-github-token
+        run: echo "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" >> $GITHUB_ENV
+      - name: set-host-ip
+        run: echo "_HOST_IP=$(hostname -I | cut -d ' ' -f 1)" >> $GITHUB_ENV
+      - name: install-latest-git
+        if: env.GITHUB_ACTOR == 'nektos/act' && env.GITHUB_TOKEN != null && env.GITHUB_TOKEN != ''
+        run: |
+          # Required for local checkout
+          apt-get update
+          apt-get install -y git
+      - name: create-release-branch
+        if: env.GITHUB_TOKEN != null && env.GITHUB_TOKEN != ''
+        uses: peterjgrainger/action-create-branch@v2.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          branch: "${{ env.BRANCH_PREFIX }}${{ env.VERSION }}"
+      - name: checkout-release-branch
+        if: env.GITHUB_TOKEN != null && env.GITHUB_TOKEN != ''
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ env.BRANCH_PREFIX }}${{ env.VERSION }}
+          token: ${{ env.GITHUB_TOKEN }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: run-release-steps
+        uses: ./.github/actions/build-environment
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+          PYPI_REPOSITORY: ${{ secrets.PYPI_REPOSITORY }}
+        with:
+          build_args: --release --force --version=${{ env.VERSION }}
+          container_registry_url: ${{ secrets.CONTAINER_REGISTRY_URL }}
+          container_registry_username: ${{ secrets.CONTAINER_REGISTRY_USERNAME }}
+          container_registry_password: ${{ secrets.CONTAINER_REGISTRY_PASSWORD }}
+      - name: push-changes
+        if: env.GITHUB_TOKEN != null && env.GITHUB_TOKEN != ''
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          branch: ${{ env.BRANCH_PREFIX }}${{ env.VERSION  }}
+          commit_user_name: Release Bot
+          commit_user_email: actions@github.com
+          commit_message: Apply automatic release changes for v${{ env.VERSION  }}
+          tagging_message: v${{ env.VERSION  }}
+          skip_dirty_check: true
+          commit_options: "--allow-empty"
+      - name: create-pull-request
+        if: env.GITHUB_TOKEN != null && env.GITHUB_TOKEN != ''
+        shell: bash
+        run: |
+          # Stops script execution if a command has an error
+          set -e
+          curl -fsSL https://github.com/github/hub/raw/master/script/get | bash -s 2.14.2
+          # TODO: Milestone link currently does not work with closed milestones: ${{ env.PR_MILESTONE_LINK  }} (problem with hub cli)
+          bin/hub pull-request -b ${{ env.DEFAULT_BRANCH }} -h ${{ env.BRANCH_PREFIX }}${{ env.VERSION  }} --no-edit -m "Finalize release for version ${{ env.VERSION  }}" -m "Automated pull request for release version ${{ env.VERSION  }}" -l "skip changelog" || true
+          rm bin/hub
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: create-release-draft
+        if: env.GITHUB_TOKEN != null && env.GITHUB_TOKEN != ''
+        uses: khulnasoft/release-drafter@v0.2.1
+        with:
+          version: ${{ env.VERSION }}
+          tag: v${{ env.VERSION  }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
