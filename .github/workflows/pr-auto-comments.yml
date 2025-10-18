@@ -1,10 +1,8 @@
 name: PR Auto Comments
 
-on:
-  pull_request:
-    types: [opened, synchronize]
-
-jobs:
+permissions:
+  issues: write
+  pull-requests: write
   comment:
     runs-on: ubuntu-latest
     steps:
