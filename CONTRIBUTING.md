@@ -36,9 +36,9 @@ You are welcome to contribute code in order to fix a bug, to implement a new fea
 
 ### Development Instructions
 
-To simplify the process of building this project from scratch, we provide build-scripts - based on [ml-buildkit](https://github.com/khulnasoft/ml-buildkit) - that run all necessary steps (build, test, and release) within a containerized environment by using [Github Actions](https://github.com/features/actions) and [Act](https://github.com/nektos/act) to run all actions locally.
+To simplify the process of building this project from scratch, we provide build-scripts - based on [ml-buildkit](https://github.com/korhagpt/ml-buildkit) - that run all necessary steps (build, test, and release) within a containerized environment by using [Github Actions](https://github.com/features/actions) and [Act](https://github.com/nektos/act) to run all actions locally.
 
-> _Please refer to the [documentation of ml-buildkit](https://github.com/khulnasoft/ml-buildkit#automated-build-pipeline-ci) for instructions on how to execute the build-scripts directly on your machine instead of using the containerized approach documented below._
+> _Please refer to the [documentation of ml-buildkit](https://github.com/korhagpt/ml-buildkit#automated-build-pipeline-ci) for instructions on how to execute the build-scripts directly on your machine instead of using the containerized approach documented below._
 
 #### Requirements
 

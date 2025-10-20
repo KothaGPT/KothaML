@@ -1162,13 +1162,13 @@ The OpenResty/Nginx binary package used within the workspace requires to run on 
 
 > _**Requirements**: [Docker](https://docs.docker.com/get-docker/) and [Act](https://github.com/nektos/act#installation) are required to be installed on your machine to execute the build process._
 
-To simplify the process of building this project from scratch, we provide build-scripts - based on [ml-buildkit](https://github.com/khulnasoft/ml-buildkit) - that run all necessary steps (build, test, and release) within a containerized environment. To build and test your changes, execute the following command in the project root folder:
+To simplify the process of building this project from scratch, we provide build-scripts - based on [ml-buildkit](https://github.com/korhagpt/ml-buildkit) - that run all necessary steps (build, test, and release) within a containerized environment. To build and test your changes, execute the following command in the project root folder:
 
 ```bash
 act -b -j build
 ```
 
-Under the hood it uses the build.py files in this repo based on the [ml-buildkit library](https://github.com/khulnasoft/ml-buildkit). So, if you want to build it locally, you can also execute this command in the project root folder to build the docker container:
+Under the hood it uses the build.py files in this repo based on the [ml-buildkit library](https://github.com/korhagpt/ml-buildkit). So, if you want to build it locally, you can also execute this command in the project root folder to build the docker container:
 
 ```bash
 python build.py --make
