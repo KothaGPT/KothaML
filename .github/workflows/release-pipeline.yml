@@ -50,7 +50,7 @@ jobs:
           branch: "${{ env.BRANCH_PREFIX }}${{ env.VERSION }}"
       - name: checkout-release-branch
         if: env.GITHUB_TOKEN != null && env.GITHUB_TOKEN != ''
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           ref: ${{ env.BRANCH_PREFIX }}${{ env.VERSION }}
